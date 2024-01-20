@@ -1,18 +1,19 @@
-#include <iostream>
 #include <cassert>
 #include "../inc/bumpallocator.h"
 
-using namespace std;
-
-void* BumpAllocator::HAmalloc(size_t alloc_size) {
+void* BumpAllocator::HAmalloc(size_t alloc_size_in_bytes) {
     void* alloc_addr = nullptr;
-    if (curr_addr + alloc_size <= start_addr + capacity) {
+    size_t aligned_size_in_bytes = HeapAllocator::RoundUp(alloc_size_in_bytes);
+    if ((char*)curr_addr + aligned_size_in_bytes <= (char*)start_addr + capacity) {
         alloc_addr = static_cast<void*>(curr_addr);
-        curr_addr += alloc_size;
-        cout << "Allocating memory of " << alloc_size << " bytes at address: " << alloc_addr << endl;
-        return alloc_addr;
+        curr_addr = (char*)curr_addr + aligned_size_in_bytes;
     }
     
-    cerr << "Failed to allocate memory as capacity reached" << endl;
+    if (alloc_addr == nullptr) {
+        cerr << "Failed to allocate memory as capacity reached" << endl;
+    } else {
+        cout << "Allocating memory of " << alloc_size_in_bytes << " bytes at address: " << alloc_addr << endl;
+    }
+    
     return alloc_addr;
 }

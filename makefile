@@ -1,10 +1,11 @@
 PROJECT = MemoryAllocator.exe
 
-CC = g++
-CFLAGS = -Wall -Wextra -g3
-CVERSION = -std=c++20
+CC 			= g++
+CFLAGS 		= -Wall -Wextra -g3
+CVERSION 	= -std=c++20
 
-BUMPALLOCATOR = bumpallocator
+BUMPALLOCATOR 		= bumpallocator
+IMPLICITALLOCATOR 	= implicit
 
 TEST = test
 
@@ -16,7 +17,7 @@ RESDIR		= res
 SRCEXT		= cpp
 OBJEXT		= o
 
-all: resources $(BUMPALLOCATOR) $(TEST)
+all: $(TEST)
 
 resources: directories
 #	@cp $(RESDIR)/* $(TARGETDIR)
@@ -25,11 +26,14 @@ directories:
 	@mkdir -p $(TARGETDIR)
 	@mkdir -p $(BUILDDIR)
 
-$(BUMPALLOCATOR): directories
+$(BUMPALLOCATOR):
 	$(CC) $(CFLAGS) -c $(CVERSION) $(SRCDIR)/$(BUMPALLOCATOR).cpp -o $(BUILDDIR)/$(BUMPALLOCATOR).o 
 
-$(TEST): resources $(BUILDDIR)/$(BUMPALLOCATOR).o
-	$(CC) $(CFLAGS) $(CVERSION) $(SRCDIR)/$(TEST).cpp -o $(BUILDDIR)/$(TEST).o $(BUILDDIR)/$(BUMPALLOCATOR).o
+$(IMPLICITALLOCATOR):
+	$(CC) $(CFLAGS) -c $(CVERSION) $(SRCDIR)/$(IMPLICITALLOCATOR).cpp -o $(BUILDDIR)/$(IMPLICITALLOCATOR).o 
+
+$(TEST): resources $(BUMPALLOCATOR) $(IMPLICITALLOCATOR)
+	$(CC) $(CFLAGS) $(CVERSION) $(SRCDIR)/$(TEST).cpp -o $(BUILDDIR)/$(TEST).o $(BUILDDIR)/$(BUMPALLOCATOR).o $(BUILDDIR)/$(IMPLICITALLOCATOR).o
 
 .phony: all clean directories
 
