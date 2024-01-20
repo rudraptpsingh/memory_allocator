@@ -1,8 +1,8 @@
 #include <iostream>
-#include <memory>
-#include <list>
 
 using namespace std;
+
+#pragma once
 
 class HeapAllocator {
 public:
@@ -21,13 +21,18 @@ public:
         heap_start_addr = nullptr;
     }
 
-    void* HAmalloc(size_t size);
+    static size_t RoundUp(size_t size_in_bytes) {
+        return (1 + (size_in_bytes-1)/alignment_in_bytes)*alignment_in_bytes;
+    }
 
-    void HAfree(void* ptr);
+    void* HAmalloc(size_t alloc_size);
 
-    void* HArealloc(void* ptr, size_t size);
+    void HAfree(void* addr);
+
+    void* HArealloc(void* addr, size_t alloc_size);
 
 protected:
+    static const size_t alignment_in_bytes = sizeof(size_t);
     size_t capacity;
     void* heap_start_addr;
 };

@@ -34,7 +34,7 @@ Questions to consider:
 4. What do we do with the block that has just been freed?
 
 Implicit Free List Allocator:
-1. In order to reuse blocks, we need a wau to track which blocks are allocated and which are free.
+1. In order to reuse blocks, we need a way to track which blocks are allocated and which are free.
 2. We could store this information in a separate global structure but this is inefficient.
 3. Let's allocate extra space before each block for a header storing its payload size and whether it is allocated or free.
 4. When we allocate a block, we look through blocks to find a free one, and we update its header to reflect its allocated size and that it is now allocated.
