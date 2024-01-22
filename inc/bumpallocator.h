@@ -1,7 +1,5 @@
 #include "heapallocator.h"
 
-using namespace std;
-
 class BumpAllocator : public HeapAllocator{
 public:
     BumpAllocator(size_t _capacity) :

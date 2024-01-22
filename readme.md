@@ -46,7 +46,7 @@ block size will always be a multiple of 8.
 Least significant 3 bits will be unused. use one of them to store free/allocated status.
 
 How can we choose a free block to use for an allocation request?
-1. First fit: search the list from the beginning each time and choose first free bloc that fits.
+1. First fit: search the list from the beginning each time and choose first free block that fits.
 2. Next fit: instead of starting at the beginning, continue where previous search left off.
 3. Best fit: examine every free block and choose the one with the smallest size that fits.
 
@@ -73,7 +73,6 @@ We may be able to keep the date in same place when
 3. size is growing, and current block isn't big enough, but adjacent blocks are free.
 Combine with the right neighbors as much as possible until we get enough space, or until we know we can't get enough space.
 
-
-
-
-
+Testing:
+The following command is run to check for no memory leaks.
+leaks --atExit -- ./obj/test.o

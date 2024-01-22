@@ -1,42 +1,49 @@
 PROJECT = MemoryAllocator.exe
 
 CC 			= g++
-CFLAGS 		= -Wall -Wextra -g3
 CVERSION 	= -std=c++20
+CFLAGS 		= -Wall -Wextra -g3 $(CVERSION)
 
+HEAPALLOCATOR		= heapallocator
 BUMPALLOCATOR 		= bumpallocator
 IMPLICITALLOCATOR 	= implicit
+EXPLICITALLOCATOR	= explicit
 
 TEST = test
 
 SRCDIR		= src
 INCDIR		= inc
-BUILDDIR	= obj
+OBJDIR		= obj
 TARGETDIR	= bin
 RESDIR		= res
+TESTSDIR	= tests
+INCEXT		= h
 SRCEXT		= cpp
 OBJEXT		= o
+EXEEXT		= exe
+
+# Define the header files
+HDR	= $(HEAPALLOCATOR).$(INCEXT) $(BUMPALLOCATOR).$(INCEXT) $(IMPLICITALLOCATOR).$(INCEXT) $(EXPLICITALLOCATOR).$(INCEXT)
+
+# Define the source files and object files
+SRC	= $(wildcard $(SRCDIR)/*.$(SRCEXT))
+OBJ = $(patsubst $(SRCDIR)/%.$(SRCEXT),$(OBJDIR)/%.$(OBJEXT),$(SRC))
 
 all: $(TEST)
 
-resources: directories
-#	@cp $(RESDIR)/* $(TARGETDIR)
-
 directories:
 	@mkdir -p $(TARGETDIR)
-	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(OBJDIR)
 
-$(BUMPALLOCATOR):
-	$(CC) $(CFLAGS) -c $(CVERSION) $(SRCDIR)/$(BUMPALLOCATOR).cpp -o $(BUILDDIR)/$(BUMPALLOCATOR).o 
+# Rule to build the object files from the source files and header files
+$(OBJDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT) $(INCDIR)/%.$(INCEXT)
+	$(CC) $(CFLAGS) -c $< -o $@ -I$(INCDIR)
 
-$(IMPLICITALLOCATOR):
-	$(CC) $(CFLAGS) -c $(CVERSION) $(SRCDIR)/$(IMPLICITALLOCATOR).cpp -o $(BUILDDIR)/$(IMPLICITALLOCATOR).o 
+$(TEST): directories $(OBJ)
+	$(CC) $(CFLAGS) $(TESTSDIR)/$(TEST).$(SRCEXT) -o $(TARGETDIR)/$(TEST).$(EXEEXT) $(OBJ)
 
-$(TEST): resources $(BUMPALLOCATOR) $(IMPLICITALLOCATOR)
-	$(CC) $(CFLAGS) $(CVERSION) $(SRCDIR)/$(TEST).cpp -o $(BUILDDIR)/$(TEST).o $(BUILDDIR)/$(BUMPALLOCATOR).o $(BUILDDIR)/$(IMPLICITALLOCATOR).o
-
-.phony: all clean directories
+.phony: clean directories
 
 clean:
-	rm -rf $(BUILDDIR)
+	rm -rf $(OBJDIR)
 	rm -rf $(TARGETDIR)
